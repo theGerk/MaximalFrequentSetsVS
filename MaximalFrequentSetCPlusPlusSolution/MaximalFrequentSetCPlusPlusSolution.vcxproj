@@ -19,13 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RectangularArray.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="TransactionSet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Array.h" />
+    <ClInclude Include="BinaryTree.h" />
     <ClInclude Include="RectangularArray.h" />
     <ClInclude Include="TransactionSet.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="InputTest.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C9752F89-4648-4F8D-A24A-224401CFA57F}</ProjectGuid>

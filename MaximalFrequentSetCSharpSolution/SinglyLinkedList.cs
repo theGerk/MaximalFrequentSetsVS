@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 public class SinglyLinkedList<T> : IEnumerable<T>
-{
+{ 
 	public T Value { get; set; }
 	public SinglyLinkedList<T> Next { get; set; }
 	
