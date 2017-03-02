@@ -31,7 +31,7 @@ namespace MaximalFrequentSet
 			 * 13
 			 */
 
-			for (int i = 0; i < input.Length; i++)
+			for (int i = 1; i < input.Length; i++)
 			{
 				my.MinimumForFrequency = i;
 				var output = my.MaxFrequentSet();

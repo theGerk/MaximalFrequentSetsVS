@@ -10,7 +10,7 @@ namespace MaximalFrequentSet
 	public class TransactionSet
 	{
 		bool[][] data;      //[row][column]
-		public int MinimumForFrequency { get; set; }
+		public int MinimumForFrequency { get; set; }		//must be greater then 0, if set at <=0 will act the same as if set to 1
 
 		// initilizes with a csv file
 		public TransactionSet(string csvFile, int minFrequency)
@@ -45,7 +45,7 @@ namespace MaximalFrequentSet
 		// initilizes baseed on set litteral
 		public TransactionSet(bool[][] input, int minFrequency)
 		{
-			data = input;
+			data = input.Select(b => b.ToArray()).ToArray();
 			MinimumForFrequency = minFrequency;
 		}
 
