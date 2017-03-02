@@ -89,13 +89,20 @@ namespace MaximalFrequentSet
 		// number of columns
 		public int Columns { get { return data[0].Length; } }
 
-		public List<int[]> MaxFrequentSet()
+		public List<int[]> MaxFrequentSet(int maximal = -1)
 		{
+			int oldmax = minimumForFrequency;
+			if(maximal >= 0)
+				minimumForFrequency = maximal;
+
 			List<int[]> output = new List<int[]>();
 			HashSet<int> available = new HashSet<int>();
 			for (int i = 0; i < Columns; i++)
 				available.Add(i);
 			MaxFrequentSet(output, available, null);
+
+			minimumForFrequency = oldmax;
+
 			return output;
 		}
 

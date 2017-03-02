@@ -33,7 +33,7 @@ namespace MaximalFrequentSet
 
 			for (int i = 0; i < input.Length; i++)
 			{
-				var output = my.MaxFrequentSet();
+				var output = my.MaxFrequentSet(i);
 
 				//foreach (var o in output)
 				//{
