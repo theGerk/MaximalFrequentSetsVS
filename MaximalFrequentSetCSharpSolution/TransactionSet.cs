@@ -10,12 +10,12 @@ namespace MaximalFrequentSet
 	public class TransactionSet
 	{
 		bool[][] data;      //[row][column]
-		int minimumForFrequency;
+		public int MinimumForFrequency { get; set; }
 
 		// initilizes with a csv file
 		public TransactionSet(string csvFile, int minFrequency)
 		{
-			minimumForFrequency = minFrequency;
+			MinimumForFrequency = minFrequency;
 
 			var dataList = new List<List<bool>>();
 			using (var readStream = File.OpenRead(csvFile))
@@ -46,7 +46,7 @@ namespace MaximalFrequentSet
 		public TransactionSet(bool[][] input, int minFrequency)
 		{
 			data = input;
-			minimumForFrequency = minFrequency;
+			MinimumForFrequency = minFrequency;
 		}
 
 		// checks if a set of columns is frequent.
@@ -63,7 +63,7 @@ namespace MaximalFrequentSet
 						break;
 				}
 				if (included)
-					if (++total >= minimumForFrequency)
+					if (++total >= MinimumForFrequency)
 						return true;
 			}
 			return false;
@@ -79,7 +79,7 @@ namespace MaximalFrequentSet
 					included &= row[value];
 				}
 				if (included)
-					if (++total >= minimumForFrequency)
+					if (++total >= MinimumForFrequency)
 						return true;
 					
 			}
@@ -88,21 +88,15 @@ namespace MaximalFrequentSet
 
 		// number of columns
 		public int Columns { get { return data[0].Length; } }
+		public int Rows { get { return data.Length; } }
 
-		public List<int[]> MaxFrequentSet(int maximal = -1)
+		public List<int[]> MaxFrequentSet()
 		{
-			int oldmax = minimumForFrequency;
-			if(maximal >= 0)
-				minimumForFrequency = maximal;
-
 			List<int[]> output = new List<int[]>();
 			HashSet<int> available = new HashSet<int>();
 			for (int i = 0; i < Columns; i++)
 				available.Add(i);
 			MaxFrequentSet(output, available, null);
-
-			minimumForFrequency = oldmax;
-
 			return output;
 		}
 

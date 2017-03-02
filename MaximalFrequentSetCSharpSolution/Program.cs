@@ -20,7 +20,7 @@ namespace MaximalFrequentSet
 				input[i] = row;
 			}
 
-			TransactionSet my = new TransactionSet(input, 1);
+			TransactionSet my = new TransactionSet(input, 0);
 
 			Console.WriteLine(my.IsFrequent(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
 
@@ -33,14 +33,8 @@ namespace MaximalFrequentSet
 
 			for (int i = 0; i < input.Length; i++)
 			{
-				var output = my.MaxFrequentSet(i);
-
-				//foreach (var o in output)
-				//{
-				//	foreach (var p in o)
-				//		Console.Write("{0}, ", p);
-				//	Console.WriteLine();
-				//}
+				my.MinimumForFrequency = i;
+				var output = my.MaxFrequentSet();
 
 				Console.WriteLine(output.Count);
 			}
