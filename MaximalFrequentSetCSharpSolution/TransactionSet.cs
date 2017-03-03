@@ -4,49 +4,88 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Munchers;
 
 namespace MaximalFrequentSet
 {
 	public class TransactionSet
 	{
-		bool[][] data;      //[row][column]
-		public int MinimumForFrequency { get; set; }		//must be greater then 0, if set at <=0 will act the same as if set to 1
-
-		// initilizes with a csv file
-		public TransactionSet(string csvFile, int minFrequency)
+		private struct Row : IComparable<Row>, IComparable<IList<bool>>
 		{
-			MinimumForFrequency = minFrequency;
+			bool[] data;
 
-			var dataList = new List<List<bool>>();
-			using (var readStream = File.OpenRead(csvFile))
+			public int Length { get { return data.Length; } }
+			public int count;
+			public int NumberContained(IEnumerable<int> columnSet)
 			{
-				using (var reader = new StreamReader(readStream))
+				bool included = true;
+				foreach (var value in columnSet)
 				{
-					for(var line = reader.ReadLine().Split(','); !reader.EndOfStream; line = reader.ReadLine().Split(','))
-					{
-						var row = new List<bool>();
-						foreach(var value in line)
-						{
-							row.Add(bool.Parse(value));
-						}
-						dataList.Add(row);
-					}
+					included &= data[value];
+					if (!included)
+						break;
 				}
+				return count;
 			}
 
-
-			data = new bool[dataList.Count][];
-			for (int i = 0; i < data.Length; i++)
+			public int CompareTo(Row other)
 			{
-				data[i] = dataList[i].ToArray();
+				if (data.Length != other.data.Length)
+					return data.Length.CompareTo(other.data.Length);
+
+				for(int i = 0; i < data.Length; i++)
+				{
+					if (data[i] != other.data[i])
+						return data[i].CompareTo(other.data[i]);
+				}
+				return 0;
+			}
+			public int CompareTo(IList<bool> other)
+			{
+				if (data.Length != other.Count)
+					return data.Length.CompareTo(other.Count);
+
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (data[i] != other[i])
+						return data[i].CompareTo(other[i]);
+				}
+				return 0;
+			}
+
+			public Row(IEnumerable<bool> values, int cnt = 1)
+			{
+				data = values.ToArray();
+				count = cnt;
 			}
 		}
 
-		// initilizes baseed on set litteral
-		public TransactionSet(bool[][] input, int minFrequency)
+
+		Row[] data;      //[row][column]
+		public int MinimumForFrequency { get; set; }        //must be greater then 0, if set at <= 0 will act the same as if set to 1		
+		public int Columns { get { return data[0].Length; } }
+		public int Rows { get { return data.Length; } }
+
+
+		// initilizes with an input file
+		public TransactionSet(string fileName, int minFrequency)
 		{
-			data = input.Select(b => b.ToArray()).ToArray();
 			MinimumForFrequency = minFrequency;
+			Sort<Row> set = new SortedSet<Row>();
+			using (StreamReader read = new StreamReader(File.OpenRead(fileName)))
+			{
+				string line = read.ReadLine();
+				while(!read.EndOfStream)
+				{
+					using (Task<string> t = read.ReadLineAsync())
+					{
+						t.Start();
+						var row = line.MunchToBool(StringMuncher.Formating.Decimal);
+						
+						line = t.Result;
+					}
+				}
+			}
 		}
 
 		// checks if a set of columns is frequent.
@@ -55,16 +94,9 @@ namespace MaximalFrequentSet
 			int total = 0;
 			foreach (var row in data)
 			{
-				bool included = true;
-				foreach (var value in columnSet)
-				{
-					included &= row[value];
-					if (!included)
-						break;
-				}
-				if (included)
-					if (++total >= MinimumForFrequency)
-						return true;
+				total += row.NumberContained(columnSet);
+				if (total >= MinimumForFrequency)
+					return true;
 			}
 			return false;
 		}
@@ -73,22 +105,12 @@ namespace MaximalFrequentSet
 			int total = 0;
 			foreach (var row in data)
 			{
-				bool included = true;
-				foreach (var value in columnSet)
-				{
-					included &= row[value];
-				}
-				if (included)
-					if (++total >= MinimumForFrequency)
-						return true;
-					
+				total += row.NumberContained(columnSet);
+				if (total >= MinimumForFrequency)
+					return true;
 			}
 			return false;
 		}
-
-		// number of columns
-		public int Columns { get { return data[0].Length; } }
-		public int Rows { get { return data.Length; } }
 
 		public List<int[]> MaxFrequentSet()
 		{
@@ -106,9 +128,17 @@ namespace MaximalFrequentSet
 
 			if (available.Count == 0)
 			{
-				var addIn = build.ToArray();
+				int[] addIn;
+				try
+				{
+					addIn = build.ToArray();
+				}
+				catch (ArgumentNullException)
+				{
+					addIn = new int[]{ };
+				}
 				// check that build is not a subset of any element in output
-				ISet<int> buildSet = new HashSet<int>(build);
+				ISet<int> buildSet = new HashSet<int>(addIn);
 				if (!output.Exists(p => buildSet.IsSubsetOf(p)))
 					output.Add(addIn);
 			}
