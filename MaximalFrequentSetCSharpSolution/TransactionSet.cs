@@ -71,7 +71,7 @@ namespace MaximalFrequentSet
 		public TransactionSet(string fileName, int minFrequency)
 		{
 			MinimumForFrequency = minFrequency;
-			Sort<Row> set = new SortedSet<Row>();
+			List<Row> set = new List<Row>();
 			using (StreamReader read = new StreamReader(File.OpenRead(fileName)))
 			{
 				string line = read.ReadLine();
@@ -81,7 +81,7 @@ namespace MaximalFrequentSet
 					{
 						t.Start();
 						var row = line.MunchToBool(StringMuncher.Formating.Decimal);
-						
+
 						line = t.Result;
 					}
 				}
