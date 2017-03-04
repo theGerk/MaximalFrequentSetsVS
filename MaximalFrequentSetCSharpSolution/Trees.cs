@@ -1,14 +1,14 @@
 ﻿namespace System.Collections.Generic
 {
-	public struct Pair<TypeOne, TypeTwo>
+	public struct ValueCount<T>
 	{
-		public TypeOne ValOne;
-		public TypeTwo ValTwo;
+		public T Value;
+		public int Count;
 
-		public Pair(TypeOne one, TypeTwo two)
+		public ValueCount(T val, int cnt)
 		{
-			ValOne = one;
-			ValTwo = two;
+			Value = val;
+			Count = cnt;
 		}
 	}
 
@@ -54,16 +54,16 @@
 			public IEnumerable<T> Read_DepthFirst()
 			{
 				//first child
-				if (FirstChild != null)
-					foreach (T val in FirstChild.Read_DepthFirst())
+				if (GetFirstChild() != null)
+					foreach (T val in GetFirstChild().Read_DepthFirst())
 						yield return val;
 
 				//this node
 				yield return Value;
 
 				//second child
-				if (SecondChild != null)
-					foreach (T val in SecondChild.Read_DepthFirst())
+				if (GetSecondChild() != null)
+					foreach (T val in GetSecondChild().Read_DepthFirst())
 						yield return val;
 			}
 
@@ -71,43 +71,46 @@
 			{
 				get
 				{
-					return new BaseTreeNode<T>[2] { FirstChild, SecondChild };
+					return new BaseTreeNode<T>[2] { GetFirstChild(), GetSecondChild() };
 				}
 			}
 		}
 
-		public class BinarySearchTree<T> where T : IComparable<T>
+		public class BinarySearchTree<T>: IEnumerable<T>, IEnumerable<ValueCount<T>> where T : IComparable<T>
 		{
-			protected class BinarySearchTreeNode : BaseBinaryTreeNode<Pair<T, int>>
+			protected class BinarySearchTreeNode : BaseBinaryTreeNode<ValueCount<T>>
 			{
 				public BinarySearchTreeNode FirstChild { get; set; }
 				public BinarySearchTreeNode SecondChild { get; set; }
-				public override Pair<T, int> Value { get { return val; } set { val = value; } }
-				protected Pair<T, int> val;
+				public override ValueCount<T> Value { get { return val; } set { val = value; } }
+				protected ValueCount<T> val;
 
 				public BinarySearchTreeNode(T val)
 				{
-					Value = new Pair<T, int>(val, 1);
+					Value = new ValueCount<T
+						>(val, 1);
 				}
 
-				public override BaseBinaryTreeNode<Pair<T, int>> GetFirstChild()
+				public override BaseBinaryTreeNode<ValueCount<T>> GetFirstChild()
 				{
 					return FirstChild;
 				}
-				public override BaseBinaryTreeNode<Pair<T, int>> GetSecondChild()
+				public override BaseBinaryTreeNode<ValueCount<T>> GetSecondChild()
 				{
 					return SecondChild;
 				}
 
 				public void Increment()
 				{
-					val.ValTwo++;
+					val.Count++;
 				}
 			}
 
 			protected BinarySearchTreeNode head;
 
 			public BinarySearchTree() { }
+			public BinarySearchTree(T value) { head = new BinarySearchTreeNode(value); }
+			public BinarySearchTree(IEnumerable<T> values) { Insert(values); }
 
 			public void Insert(T value)
 			{
@@ -122,7 +125,7 @@
 					do
 					{
 						parent = current;
-						compareResult = current.Value.ValOne.CompareTo(value);
+						compareResult = current.Value.Value.CompareTo(value);
 						if (compareResult < 0)
 							current = current.FirstChild;
 						else if (compareResult == 0)
@@ -139,6 +142,34 @@
 					else
 						parent.SecondChild = new BinarySearchTreeNode(value);
 				}
+			}
+			public void Insert(IEnumerable<T> values)
+			{
+				foreach (T val in values)
+					Insert(val);
+			}
+
+			public static IEnumerable<T> Sort(IEnumerable<T> input)
+			{
+				return new BinarySearchTree<T>(input);
+			}
+			
+
+			public IEnumerator<T> GetEnumerator()
+			{
+				foreach (ValueCount<T> item in head.Read_DepthFirst())
+					for (int i = 0; i < item.Count; i++)
+						yield return item.Value;
+			}
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				foreach (ValueCount<T> item in head.Read_DepthFirst())
+					for (int i = 0; i < item.Count; i++)
+						yield return item.Value;
+			}
+			IEnumerator<ValueCount<T>> IEnumerable<ValueCount<T>>.GetEnumerator()
+			{
+				return head.Read_DepthFirst().GetEnumerator();
 			}
 		}
 	}
