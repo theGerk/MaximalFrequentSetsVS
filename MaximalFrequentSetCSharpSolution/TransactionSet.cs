@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Munchers;
+using System.Collections.Generic.Tree;
+using System.Collections;
 
 namespace MaximalFrequentSet
 {
 	public class TransactionSet
 	{
-		private struct Row : IComparable<Row>, IComparable<IList<bool>>
+		private struct Row
 		{
 			bool[] data;
 
@@ -28,41 +30,56 @@ namespace MaximalFrequentSet
 				return count;
 			}
 
-			public int CompareTo(Row other)
-			{
-				if (data.Length != other.data.Length)
-					return data.Length.CompareTo(other.data.Length);
-
-				for(int i = 0; i < data.Length; i++)
-				{
-					if (data[i] != other.data[i])
-						return data[i].CompareTo(other.data[i]);
-				}
-				return 0;
-			}
-			public int CompareTo(IList<bool> other)
-			{
-				if (data.Length != other.Count)
-					return data.Length.CompareTo(other.Count);
-
-				for (int i = 0; i < data.Length; i++)
-				{
-					if (data[i] != other[i])
-						return data[i].CompareTo(other[i]);
-				}
-				return 0;
-			}
-
 			public Row(IEnumerable<bool> values, int cnt = 1)
 			{
 				data = values.ToArray();
 				count = cnt;
 			}
 		}
+		private struct CompareableEnumerable<T> : IComparable<IEnumerable<T>>, IComparable<CompareableEnumerable<T>>, IEnumerable<T> where T : IComparable<T>
+		{
+			IEnumerable<T> content;
+
+			public CompareableEnumerable(IEnumerable<T> input)
+			{
+				content = input;
+			}
+
+			public int CompareTo(CompareableEnumerable<T> other)
+			{
+				return CompareTo((IEnumerable<T>)other);
+			}
+
+			public int CompareTo(IEnumerable<T> other)
+			{
+				using (IEnumerator<T> thisOne = content.GetEnumerator(), otherOne = other.GetEnumerator())
+				{
+					bool thisComplete = false, otherComplete = false;
+					while((thisComplete = thisOne.MoveNext()) && (otherComplete = otherOne.MoveNext()))
+					{
+						int comp = thisOne.Current.CompareTo(otherOne.Current);
+						if (comp != 0)
+							return comp;
+					}
+					return thisComplete.CompareTo(otherComplete);
+				}
+			}
+
+			public IEnumerator<T> GetEnumerator()
+			{
+				return content.GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return content.GetEnumerator();
+			}
+		}
 
 
-		Row[] data;      //[row][column]
-		public int MinimumForFrequency { get; set; }        //must be greater then 0, if set at <= 0 will act the same as if set to 1		
+		Row[] data;
+
+		public int MinimumForFrequency { get; set; }		//must be greater then 0, if set at <= 0 will act the same as if set to 1		
 		public int Columns { get { return data[0].Length; } }
 		public int Rows { get { return data.Length; } }
 
@@ -72,20 +89,23 @@ namespace MaximalFrequentSet
 		{
 			MinimumForFrequency = minFrequency;
 			List<Row> set = new List<Row>();
+			BinarySearchTree<CompareableEnumerable<bool>> tree = new BinarySearchTree<CompareableEnumerable<bool>>();
 			using (StreamReader read = new StreamReader(File.OpenRead(fileName)))
 			{
 				string line = read.ReadLine();
 				while(!read.EndOfStream)
 				{
-					using (Task<string> t = read.ReadLineAsync())
+					using (Task<string> asyncReadLineTask = read.ReadLineAsync())
 					{
-						t.Start();
-						var row = line.MunchToBool(StringMuncher.Formating.Decimal);
-
-						line = t.Result;
+						asyncReadLineTask.Start();
+						tree.Insert(new CompareableEnumerable<bool>(line.MunchToBool(StringMuncher.Formating.Decimal)));
+						line = asyncReadLineTask.Result;
 					}
 				}
 			}
+			foreach (ValueCount<CompareableEnumerable<bool>> item in (IEnumerable<ValueCount<CompareableEnumerable<bool>>>)tree)
+				set.Add(new Row(item.Value, item.Count));
+			data = set.ToArray();
 		}
 
 		// checks if a set of columns is frequent.
@@ -138,7 +158,7 @@ namespace MaximalFrequentSet
 					addIn = new int[]{ };
 				}
 				// check that build is not a subset of any element in output
-				ISet<int> buildSet = new HashSet<int>(addIn);
+				HashSet<int> buildSet = new HashSet<int>(addIn);
 				if (!output.Exists(p => buildSet.IsSubsetOf(p)))
 					output.Add(addIn);
 			}

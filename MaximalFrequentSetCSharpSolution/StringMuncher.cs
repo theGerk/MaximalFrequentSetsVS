@@ -24,6 +24,7 @@ namespace Munchers
 			{
 				case Formating.Raw:
 					throw new NotImplementedException("Munchers.StringMuncher.MunchToBool\nformating = Raw not implemented.");
+
 				case Formating.Binary:
 				case Formating.Octal:
 				case Formating.Decimal:
@@ -36,6 +37,7 @@ namespace Munchers
 
 				case Formating.Text:
 					throw new NotImplementedException("Munchers.StringMuncher.MunchToBool\nformating = Text not implemented.");
+
 				default:
 					throw new Exception("You gave a bad formating value!");
 			}

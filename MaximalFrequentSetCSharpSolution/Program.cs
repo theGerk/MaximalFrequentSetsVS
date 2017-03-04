@@ -13,7 +13,7 @@ namespace MaximalFrequentSet
 
 		public static void Main(string[] argv)
 		{
-//			TransactionSet my = new TransactionSet("input.txt", 5);
+//			TransactionSet ts = new TransactionSet("input.txt", 5);
 		}
 	}
 }
