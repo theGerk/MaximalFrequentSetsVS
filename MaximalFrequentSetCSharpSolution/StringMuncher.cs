@@ -28,7 +28,12 @@ namespace Munchers
 				case Formating.Octal:
 				case Formating.Decimal:
 				case Formating.Hectal:
-					
+					string[] substrs = str.Split(',', ' ', '\n');
+					List<bool> output = new List<bool>(substrs.Length);
+					foreach (var item in substrs)
+						output.Add(Convert.ToInt32(item, 16) != 0);
+					return output;
+
 				case Formating.Text:
 					throw new NotImplementedException("Munchers.StringMuncher.MunchToBool\nformating = Text not implemented.");
 				default:
