@@ -87,8 +87,7 @@
 
 				public BinarySearchTreeNode(T val)
 				{
-					Value = new ValueCount<T
-						>(val, 1);
+					Value = new ValueCount<T>(val, 1);
 				}
 
 				public override BaseBinaryTreeNode<ValueCount<T>> GetFirstChild()

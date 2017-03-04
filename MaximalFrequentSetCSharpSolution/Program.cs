@@ -13,7 +13,15 @@ namespace MaximalFrequentSet
 
 		public static void Main(string[] argv)
 		{
-//			TransactionSet ts = new TransactionSet("input.txt", 5);
+			TransactionSet ts = new TransactionSet("input.txt", 2);
+			foreach (var val in ts.MaxFrequentSet())
+			{
+				var addIn = val.Reverse().ToArray();
+				Console.Write("{");
+				for (int i = 0; i < addIn.Length; i++)
+					Console.Write("{0}{1}", addIn[i], (i == addIn.Length - 1) ? "" : ", ");
+				Console.WriteLine("}");
+			}
 		}
 	}
 }

@@ -25,7 +25,7 @@ namespace MaximalFrequentSet
 				{
 					included &= data[value];
 					if (!included)
-						break;
+						return 0;
 				}
 				return count;
 			}
@@ -97,11 +97,11 @@ namespace MaximalFrequentSet
 				{
 					using (Task<string> asyncReadLineTask = read.ReadLineAsync())
 					{
-						asyncReadLineTask.Start();
 						tree.Insert(new CompareableEnumerable<bool>(line.MunchToBool(StringMuncher.Formating.Decimal)));
 						line = asyncReadLineTask.Result;
 					}
 				}
+				tree.Insert(new CompareableEnumerable<bool>(line.MunchToBool(StringMuncher.Formating.Decimal)));
 			}
 			foreach (ValueCount<CompareableEnumerable<bool>> item in (IEnumerable<ValueCount<CompareableEnumerable<bool>>>)tree)
 				set.Add(new Row(item.Value, item.Count));
@@ -160,7 +160,14 @@ namespace MaximalFrequentSet
 				// check that build is not a subset of any element in output
 				HashSet<int> buildSet = new HashSet<int>(addIn);
 				if (!output.Exists(p => buildSet.IsSubsetOf(p)))
+				{
 					output.Add(addIn);
+
+					//Console.Write("{");
+					//for (int i = 0; i < addIn.Length; i++)
+					//	Console.Write("{0}{1}", addIn[i], (i == addIn.Length - 1) ? "" : ", ");
+					//Console.WriteLine("}");
+				}
 			}
 			else
 			{
