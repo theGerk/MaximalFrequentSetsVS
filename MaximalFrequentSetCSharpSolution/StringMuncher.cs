@@ -23,7 +23,12 @@ namespace Munchers
 			switch (formating)
 			{
 				case Formating.Raw:
-					throw new NotImplementedException("Munchers.StringMuncher.MunchToBool\nformating = Raw not implemented.");
+					throw new NotImplementedException();
+					//doesn't work this way
+					//System.Collections.BitArray bitArr = new System.Collections.BitArray(Convert.FromBase64String(str));
+					//bool[] boolArr = new bool[bitArr.Length];
+					//bitArr.CopyTo(boolArr, 0);
+					//return boolArr.ToList();
 
 				case Formating.Binary:
 				case Formating.Octal:

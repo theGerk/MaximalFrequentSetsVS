@@ -157,6 +157,7 @@ namespace MaximalFrequentSet
 				{
 					addIn = new int[]{ };
 				}
+
 				// check that build is not a subset of any element in output
 				HashSet<int> buildSet = new HashSet<int>(addIn);
 				if (!output.Exists(p => buildSet.IsSubsetOf(p)))

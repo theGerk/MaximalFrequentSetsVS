@@ -1,4 +1,5 @@
-﻿namespace System.Collections.Generic
+﻿using System.Linq;
+namespace System.Collections.Generic
 {
 	public struct ValueCount<T>
 	{
@@ -19,26 +20,31 @@
 			abstract public IEnumerable<BaseTreeNode<T>> Children { get; }
 			abstract public T Value { get; set; }
 
-			public IEnumerable<T> Read_BreadthFirst_TopDown()
+			public IEnumerable<T> Read_BreadthFirst()
 			{
 				Queue<BaseTreeNode<T>> nodeQueue = new Queue<BaseTreeNode<T>>();
 				nodeQueue.Enqueue(this);
 
-				while (nodeQueue.Count != 0)
+				do
 				{
 					BaseTreeNode<T> current = nodeQueue.Dequeue();
 					yield return current.Value;
 					foreach (BaseTreeNode<T> child in current.Children)
 						nodeQueue.Enqueue(child);
-				}
-			}
-			public IEnumerable<T> Read_BreadthFirst_BottomUp()
-			{
-				throw new NotImplementedException();
+				} while (nodeQueue.Count != 0);
 			}
 			public IEnumerable<T> Read_DepthFirst_TopDown()
 			{
-				throw new NotImplementedException();
+				Stack<BaseTreeNode<T>> nodeStack = new Stack<BaseTreeNode<T>>();
+				nodeStack.Push(this);
+
+				do
+				{
+					BaseTreeNode<T> current = nodeStack.Pop();
+					yield return current.Value;
+					foreach (var child in current.Children.Reverse())
+						nodeStack.Push(child);
+				} while (nodeStack.Count != 0);
 			}
 			public IEnumerable<T> Read_DepthFirst_BottomUp()
 			{
@@ -71,7 +77,10 @@
 			{
 				get
 				{
-					return new BaseTreeNode<T>[2] { GetFirstChild(), GetSecondChild() };
+					if (GetFirstChild() != null)
+						yield return GetFirstChild();
+					if (GetSecondChild() != null)
+						yield return GetSecondChild();
 				}
 			}
 		}
