@@ -37,7 +37,10 @@ namespace Munchers
 					string[] substrs = str.Split(',', ' ', '\t', '\n');
 					List<bool> output = new List<bool>(substrs.Length);
 					foreach (var item in substrs)
-						output.Add(Convert.ToInt32(item, 16) != 0);
+					{
+						if(item != "")
+							output.Add(Convert.ToInt32(item, 16) != 0);
+					}
 					return output;
 
 				case Formating.Text:

@@ -134,7 +134,7 @@ namespace System.Collections.Generic
 					{
 						parent = current;
 						compareResult = current.Value.Value.CompareTo(value);
-						if (compareResult < 0)
+						if (compareResult > 0)
 							current = current.FirstChild;
 						else if (compareResult == 0)
 						{
@@ -145,7 +145,7 @@ namespace System.Collections.Generic
 							current = current.SecondChild;
 					} while (current != null);
 
-					if (compareResult < 0)
+					if (compareResult > 0)
 						parent.FirstChild = new BinarySearchTreeNode(value);
 					else
 						parent.SecondChild = new BinarySearchTreeNode(value);

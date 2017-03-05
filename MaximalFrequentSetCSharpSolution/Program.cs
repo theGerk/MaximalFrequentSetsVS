@@ -13,22 +13,29 @@ namespace MaximalFrequentSet
 
 		public static void Main(string[] argv)
 		{
-			var ts = new TransactionSet("input.txt", 2).MaxFrequentSet();
-			using (var fs = File.CreateText("output.txt"))
+			var ts = new TransactionSet("..\\..\\input.txt", 5);
+			var freq = ts.MaxFrequentSet();
+			File.Delete("..\\..\\output.txt");
+			using (var fs = File.CreateText("..\\..\\output.txt"))
 			{
-				foreach (var val in ts)
+				foreach (var val in freq)
 				{
 					var addIn = val.Reverse().ToArray();
 					Console.Write("{");
 					for (int i = 0; i < addIn.Length - 1; i++)
 					{
 						fs.Write("{0}\t", addIn[i]);
-						Console.Write("{0},", addIn[i]);
+						Console.Write("{0}, ", addIn[i]);
 					}
-					fs.WriteLine(addIn[addIn.Length - 1]);
-					Console.WriteLine("{0}{1}", addIn[addIn.Length - 1], '}');
+					try
+					{
+						fs.WriteLine(addIn[addIn.Length - 1]);
+						Console.WriteLine("{0}{1}", addIn[addIn.Length - 1], '}');
+					}
+					catch (Exception) { Console.WriteLine('}'); }
 				}
 			}
+			Console.WriteLine(freq.Count);
 		}
 	}
 }
