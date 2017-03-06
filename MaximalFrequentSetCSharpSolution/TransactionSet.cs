@@ -104,7 +104,7 @@ namespace MaximalFrequentSet
 				tree.Insert(new CompareableEnumerable<bool>(line.MunchToBool(StringMuncher.Formating.Decimal)));
 			}
 			foreach (ValueCount<CompareableEnumerable<bool>> item in (IEnumerable<ValueCount<CompareableEnumerable<bool>>>)tree)
-				set.Add(new Row(item.Value, item.Count));
+				set.Add(new Row(item.value, item.count));
 			data = set.ToArray();
 		}
 
@@ -120,10 +120,10 @@ namespace MaximalFrequentSet
 			}
 			return false;
 		}
-		public bool IsFrequent(IEnumerable<int> columnSet)
+		public bool  IsFrequent(IEnumerable<int> columnSet)
 		{
 			int total = 0;
-			foreach (var row in data)
+			foreach (Row row in data)
 			{
 				total += row.NumberContained(columnSet);
 				if (total >= MinimumForFrequency)

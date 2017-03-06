@@ -15,9 +15,9 @@ namespace Struct
 		size_t _length;
 
 #ifndef UNSAFEMODE
-		inline void saftyCheck(const size_t pos)
+		void saftyCheck(const size_t pos) const
 		{
-			if (pos >= length)
+			if (pos >= _length)
 				throw std::out_of_range("");
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Struct
 		inline T get(const size_t position) const 
 		{
 #ifndef UNSAFEMODE
-			saftyCheck();
+			saftyCheck(position);
 #endif
 			return data[position];
 		}

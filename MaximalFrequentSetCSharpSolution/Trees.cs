@@ -1,20 +1,44 @@
 ﻿using System.Linq;
 namespace System.Collections.Generic
 {
+	/// <summary>
+	/// A value and an 32 bit signed integer representing the number of it that exists.
+	/// </summary>
+	/// <typeparam name="T">The type of the value contained in ValueCount</typeparam>
 	public struct ValueCount<T>
 	{
-		public T Value;
-		public int Count;
+		/// <summary>
+		/// The value stored in ValueCount
+		/// </summary>
+		public T value;
 
+		/// <summary>
+		/// the number associated with the value
+		/// </summary>
+		public int count;
+
+		/// <summary>
+		/// Initilizes new instance of ValueCount
+		/// </summary>
+		/// <param name="val">The value</param>
+		/// <param name="cnt">The count</param>
 		public ValueCount(T val, int cnt)
 		{
-			Value = val;
-			Count = cnt;
+			value = val;
+			count = cnt;
 		}
 	}
 
+	/// <summary>
+	/// Structures for all sorts of tree structures
+	/// </summary>
 	namespace Tree
 	{
+		/// <summary>
+		/// Abstract class for any sort of tree node
+		/// </summary>
+		/// <!--Could be used for graphs as well, later update?-->
+		/// <typeparam name="T">Tree type</typeparam>
 		public abstract class BaseTreeNode<T>
 		{
 			abstract public IEnumerable<BaseTreeNode<T>> Children { get; }
@@ -110,7 +134,7 @@ namespace System.Collections.Generic
 
 				public void Increment()
 				{
-					val.Count++;
+					val.count++;
 				}
 			}
 
@@ -133,7 +157,7 @@ namespace System.Collections.Generic
 					do
 					{
 						parent = current;
-						compareResult = current.Value.Value.CompareTo(value);
+						compareResult = current.Value.value.CompareTo(value);
 						if (compareResult > 0)
 							current = current.FirstChild;
 						else if (compareResult == 0)
@@ -166,14 +190,14 @@ namespace System.Collections.Generic
 			public IEnumerator<T> GetEnumerator()
 			{
 				foreach (ValueCount<T> item in head.Read_DepthFirst())
-					for (int i = 0; i < item.Count; i++)
-						yield return item.Value;
+					for (int i = 0; i < item.count; i++)
+						yield return item.value;
 			}
 			IEnumerator IEnumerable.GetEnumerator()
 			{
 				foreach (ValueCount<T> item in head.Read_DepthFirst())
-					for (int i = 0; i < item.Count; i++)
-						yield return item.Value;
+					for (int i = 0; i < item.count; i++)
+						yield return item.value;
 			}
 			IEnumerator<ValueCount<T>> IEnumerable<ValueCount<T>>.GetEnumerator()
 			{
