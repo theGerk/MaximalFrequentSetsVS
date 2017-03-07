@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+
+
+
 namespace System.Collections.Generic
 {
 	/// <summary>
@@ -39,32 +42,42 @@ namespace System.Collections.Generic
 		/// </summary>
 		/// <!--Could be used for graphs as well, later update?-->
 		/// <typeparam name="T">Tree type</typeparam>
-		public abstract class BaseTreeNode<T>
+		public abstract class TreeNodeBase<T>
 		{
-			abstract public IEnumerable<BaseTreeNode<T>> Children { get; }
+			/// <summary>
+			/// All children of the node
+			/// </summary>
+			abstract public IEnumerable<TreeNodeBase<T>> Children { get; }
+			/// <summary>
+			/// the value contained in the node
+			/// </summary>
 			abstract public T Value { get; set; }
 
+			/// <summary>
+			/// Enumerates across the array with standard breadth first search
+			/// </summary>
+			/// <returns>IEnumerable</returns>
 			public IEnumerable<T> Read_BreadthFirst()
 			{
-				Queue<BaseTreeNode<T>> nodeQueue = new Queue<BaseTreeNode<T>>();
+				Queue<TreeNodeBase<T>> nodeQueue = new Queue<TreeNodeBase<T>>();
 				nodeQueue.Enqueue(this);
 
 				do
 				{
-					BaseTreeNode<T> current = nodeQueue.Dequeue();
+					TreeNodeBase<T> current = nodeQueue.Dequeue();
 					yield return current.Value;
-					foreach (BaseTreeNode<T> child in current.Children)
+					foreach (TreeNodeBase<T> child in current.Children)
 						nodeQueue.Enqueue(child);
 				} while (nodeQueue.Count != 0);
 			}
 			public IEnumerable<T> Read_DepthFirst_TopDown()
 			{
-				Stack<BaseTreeNode<T>> nodeStack = new Stack<BaseTreeNode<T>>();
+				Stack<TreeNodeBase<T>> nodeStack = new Stack<TreeNodeBase<T>>();
 				nodeStack.Push(this);
 
 				do
 				{
-					BaseTreeNode<T> current = nodeStack.Pop();
+					TreeNodeBase<T> current = nodeStack.Pop();
 					yield return current.Value;
 					foreach (var child in current.Children.Reverse())
 						nodeStack.Push(child);
@@ -76,10 +89,10 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public abstract class BaseBinaryTreeNode<T> : BaseTreeNode<T>
+		public abstract class BinaryTreeNodeBase<T> : TreeNodeBase<T>
 		{
-			abstract public BaseBinaryTreeNode<T> GetFirstChild();
-			abstract public BaseBinaryTreeNode<T> GetSecondChild();
+			abstract public BinaryTreeNodeBase<T> GetFirstChild();
+			abstract public BinaryTreeNodeBase<T> GetSecondChild();
 
 			public IEnumerable<T> Read_DepthFirst()
 			{
@@ -97,7 +110,7 @@ namespace System.Collections.Generic
 						yield return val;
 			}
 
-			public override IEnumerable<BaseTreeNode<T>> Children
+			public override IEnumerable<TreeNodeBase<T>> Children
 			{
 				get
 				{
@@ -111,7 +124,7 @@ namespace System.Collections.Generic
 
 		public class BinarySearchTree<T>: IEnumerable<T>, IEnumerable<ValueCount<T>> where T : IComparable<T>
 		{
-			protected class BinarySearchTreeNode : BaseBinaryTreeNode<ValueCount<T>>
+			protected class BinarySearchTreeNode : BinaryTreeNodeBase<ValueCount<T>>
 			{
 				public BinarySearchTreeNode FirstChild { get; set; }
 				public BinarySearchTreeNode SecondChild { get; set; }
@@ -123,11 +136,11 @@ namespace System.Collections.Generic
 					Value = new ValueCount<T>(val, 1);
 				}
 
-				public override BaseBinaryTreeNode<ValueCount<T>> GetFirstChild()
+				public override BinaryTreeNodeBase<ValueCount<T>> GetFirstChild()
 				{
 					return FirstChild;
 				}
-				public override BaseBinaryTreeNode<ValueCount<T>> GetSecondChild()
+				public override BinaryTreeNodeBase<ValueCount<T>> GetSecondChild()
 				{
 					return SecondChild;
 				}

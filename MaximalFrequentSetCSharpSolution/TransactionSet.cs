@@ -93,7 +93,7 @@ namespace MaximalFrequentSet
 			using (StreamReader read = new StreamReader(File.OpenRead(fileName)))
 			{
 				string line = read.ReadLine();
-				while(!read.EndOfStream)
+				while (!read.EndOfStream)
 				{
 					using (Task<string> asyncReadLineTask = read.ReadLineAsync())
 					{

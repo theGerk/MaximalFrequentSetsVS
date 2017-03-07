@@ -13,7 +13,7 @@ namespace MaximalFrequentSet
 
 		public static void Main(string[] argv)
 		{
-			var ts = new TransactionSet("..\\..\\input.txt", 5);
+			var ts = new TransactionSet("..\\..\\input.txt", 1);
 			var freq = ts.MaxFrequentSet();
 			File.Delete("..\\..\\output.txt");
 			using (var fs = File.CreateText("..\\..\\output.txt"))
