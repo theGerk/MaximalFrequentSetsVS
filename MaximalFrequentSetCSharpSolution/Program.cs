@@ -13,8 +13,8 @@ namespace MaximalFrequentSet
 
 		public static void Main(string[] argv)
 		{
-			var ts = new TransactionSet("..\\..\\input.txt", 1);
-			var freq = ts.MaxFrequentSet();
+			var ts = new TransactionSet("..\\..\\myData.txt");
+			/*var freq = ts.MaxFrequentSet();
 			File.Delete("..\\..\\output.txt");
 			using (var fs = File.CreateText("..\\..\\output.txt"))
 			{
@@ -36,6 +36,9 @@ namespace MaximalFrequentSet
 				}
 			}
 			Console.WriteLine(freq.Count);
+			*/
+			for (ts.MinimumForFrequency = ts.Rows; ts.MinimumForFrequency > 0; ts.MinimumForFrequency--)
+				Console.WriteLine("{0,3} : {1}", ts.MinimumForFrequency, ts.MaxFrequentSet().Count);
 		}
 	}
 }

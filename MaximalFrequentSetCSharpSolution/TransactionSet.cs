@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Munchers;
-using System.Collections.Generic.Tree;
+using System.Collections.Generic.Graph.Tree;
 using System.Collections;
 
 namespace MaximalFrequentSet
@@ -85,7 +85,7 @@ namespace MaximalFrequentSet
 
 
 		// initilizes with an input file
-		public TransactionSet(string fileName, int minFrequency)
+		public TransactionSet(string fileName, int minFrequency = 1)
 		{
 			MinimumForFrequency = minFrequency;
 			List<Row> set = new List<Row>();
@@ -155,7 +155,7 @@ namespace MaximalFrequentSet
 				}
 				catch (ArgumentNullException)
 				{
-					addIn = new int[]{ };
+					addIn = new int[] { };
 				}
 
 				// check that build is not a subset of any element in output
@@ -170,7 +170,7 @@ namespace MaximalFrequentSet
 					//Console.WriteLine("}");
 				}
 			}
-			else
+			else if (!output.Exists(p => new HashSet<int>(build.Union(available)).IsSubsetOf(p)))
 			{
 				foreach (var i in available.ToArray())
 				{

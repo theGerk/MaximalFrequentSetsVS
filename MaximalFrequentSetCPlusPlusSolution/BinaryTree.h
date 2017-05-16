@@ -1,22 +1,36 @@
 #pragma once
 
-namespace Struct
-{ 
+namespace Structures
+{
 	template<typename T>
-	class BinaryTree
+	class ValueCount
 	{
-	protected:
-		T value;
-		BinaryTree<T>* left;
-		BinaryTree<T>* right;
-
 	public:
-		BinaryTree(T val) :
-			value(val),
-			left(nullptr),
-			right(nullptr) {}
+		T value;
+		size_t count;
 
-		void setLeft(BinaryTree<T>* ptr) { left = ptr; }
-		void setRight(BinaryTree<T>* ptr) { right = ptr; }
+		ValueCount(T val, size_t cnt) :
+			value(val),
+			count(cnt) {}
 	};
+
+
+		template<typename T>
+		class BinaryTreeBase
+		{
+		protected:
+			T value;
+			BinaryTreeBase<T>* left;
+			BinaryTreeBase<T>* right;
+
+		public:
+			BinaryTreeBase(T val) :
+				value(val),
+				left(nullptr),
+				right(nullptr) {}
+
+			void setLeft(BinaryTreeBase<T>* ptr) { left = ptr; }
+			void setRight(BinaryTreeBase<T>* ptr) { right = ptr; }
+		};
+
 }
